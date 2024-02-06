@@ -32,34 +32,8 @@ elif not web3.is_checksum_address(account2):
 
 private_key = '0xdef6cbd4f42085724924f5e812adc211ad86e749b7bd47716969b5f1cd0eb9c0'
 
-nonce = web3.eth.get_transaction_count(account1)
 
-#Comprobamos si las cuentas tienen fondos
-balance_1 = web3.eth.get_balance(account1)
-balance_2 = web3.eth.get_balance(account2)
-
-if balance_1 == 0:
-    print('Error: no hay fondos')
-    exit()
-elif balance_2 == 0:
-    print('Error: la cuenta 2 no tiene fondos')
-    exit()
-else:
-    print('Ambas cuentas existen')
-
-
-
-tx = {
-    'nonce': nonce,
-    'to': account2,
-    'value':web3.to_wei(1, 'ether'),
-    'gas': 2000000,
-    'gasPrice': web3.to_wei('50','gwei')
-}
-
-try:
-    signed_tx = web3.eth.account.sign_transaction(tx, private_key)
-    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-    print('Tx realizada \nNumero de la transaccion', web3.to_hex(tx_hash))
-except ValueError:
-    print('Error: firma no válida')
+# Crear instancia SC
+instancia_sc = web3.eth.contract(address = direccion_contrato, abi=abi_contrato)
+#Leer valor contrato
+totalSupply = instancia_sc.functions.totalSupply().call()
