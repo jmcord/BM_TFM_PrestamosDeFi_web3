@@ -34,6 +34,14 @@ private_key = '0xdef6cbd4f42085724924f5e812adc211ad86e749b7bd47716969b5f1cd0eb9c
 
 
 # Crear instancia SC
-instancia_sc = web3.eth.contract(address = direccion_contrato, abi=abi_contrato)
-#Leer valor contrato
-totalSupply = instancia_sc.functions.totalSupply().call()
+instancia_sc = web3.eth.contract(address = contractAddress, abi=abi_contrato)
+# Dirección del nuevo prestamista
+nuevo_prestamista = "0x6d4BD9D9891Dc50aA525077760E214E0BeB13225"  # Reemplaza con la dirección del nuevo prestamista
+
+# Llamar a la función altaPrestamista
+tx_hash = instancia_sc.functions.altaPrestamista(nuevo_prestamista).transact()
+
+# Esperar la confirmación de la transacción
+receipt = web3.eth.waitForTransactionReceipt(tx_hash)
+
+print("Transacción confirmada. Empleado prestamista dado de alta.")
