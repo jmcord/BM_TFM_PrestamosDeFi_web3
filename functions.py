@@ -84,10 +84,21 @@ def solicitar_prestamo(cliente_address, abi_contrato, monto, plazo):
 
     print("Solicitud de préstamo realizada con éxito")
 
+def obtener_detalle_de_prestamo(cliente_address, id_, abi_contrato):
+    # Conexión a la red Ganache
+    web3 = Web3(Web3.HTTPProvider(ganache_url))
+    abi_contrato = json.loads(abi_contrato)
+    instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
+    
+    # Llama a la función obtenerDetalleDePrestamo del contrato
+    detalle_prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(cliente_address, id_).call()
+    
+    # La variable 'detalle_prestamo' ahora contiene la información del préstamo
+    print("Detalle del préstamo:", detalle_prestamo)
+    return detalle_prestamo
 
 
-
-def aprobar_prestamo(prestatario_address, id_prestamo, abi_contrato):
+def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo):
     # Conexión a la red Ganache
     web3 = Web3(Web3.HTTPProvider(ganache_url))
     abi_contrato = json.loads(abi_contrato)
@@ -100,8 +111,8 @@ def aprobar_prestamo(prestatario_address, id_prestamo, abi_contrato):
         return
     
     # Obtener los detalles del préstamo
-    prestatario = instancia_sc.functions.clientes(prestatario_address).call()
-    prestamos_ids = prestatario[2]
+    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call()
+    prestamos_ids = prestamo[2]
     if id_prestamo not in prestamos_ids:
         print("Error: Préstamo no asignado al prestatario.")
         return
