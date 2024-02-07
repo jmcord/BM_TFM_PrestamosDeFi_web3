@@ -5,6 +5,9 @@ from web3 import Web3
 
 web3 = Web3(Web3.HTTPProvider(ganache_url))
 
+prestamistas = []
+clientes = []
+
 def menu():
     print("Bienvenido al menú de opciones:")
     print("1. Alta de prestamista")
@@ -34,6 +37,8 @@ def main():
                 print('Error: La primera cuenta no es válida')
                 exit()
             alta_prestamista(nuevo_prestamista, abi_contrato)
+            prestamistas.append(nuevo_prestamista)
+            #PRUEBA: se ejecuta dos veces para ver el mensaje "YA estás dado de alta"
         elif opcion == "2":
             opcion_2()
         elif opcion == "3":
