@@ -112,10 +112,10 @@ def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo):
     
     # Obtener los detalles del préstamo
     prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call()
-    prestamos_ids = prestamo[2]
-    if id_prestamo not in prestamos_ids:
-        print("Error: Préstamo no asignado al prestatario.")
-        return
+    #MEJORA: llamar a la lista de ids y ver si está ahí y comprobar:
+    #if id_prestamo not in prestamos_ids:
+    #    print("Error: Préstamo no asignado al prestatario.")
+    #    return
     
     prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call()
     if prestamo[6]:
