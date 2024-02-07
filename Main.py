@@ -1,5 +1,5 @@
 
-from functions import alta_prestamista, alta_cliente
+from functions import alta_prestamista, alta_cliente, depositar_garantia
 from env import *
 from web3 import Web3
 
@@ -12,8 +12,8 @@ def menu():
     print("Bienvenido al menú de opciones:")
     print("1. Alta de prestamista")
     print("2. Alta de cliente")
-    print("3. Opción 3")
-    print("4. Salir")
+    print("3. Depositar Garantia")
+    print("10. Salir")
 
 
 
@@ -43,16 +43,28 @@ def main():
             nuevo_cliente = input('Introduce el address del nuevo cliente: ')
             prestamista_address = input('Introduce el address del prestamista: ')
             #Check if the input address is correct
+            #PRUEBA: verificamos addresses
             if not web3.is_checksum_address(nuevo_cliente):
                 print('Error: La cuenta cliente no es válida')
                 exit()
-            if not web3.is_checksum_address(nuevo_cliente):
+            if not web3.is_checksum_address(prestamista_address):
                 print('Error: La cuenta prestamista no es válida')
                 exit()
             alta_cliente(nuevo_cliente, prestamista_address, abi_contrato)
             clientes.append(nuevo_cliente)
+            #PRUEBA: 1-se ejecuta dos veces para ver el mensaje "YA estás dado de alta"
+            #PRUEBA: 2-se ejecuta introduciendo un address que no pertenece al prestamista"
         elif opcion == "3":
-            opcion_3()
+            monto = int('Introduce la garantia: ')
+            cliente_address = input('Introduce el address del prestamista: ')
+            #Check if the input address is correct
+            #PRUEBA: verificamos addresses
+            if not web3.is_checksum_address(cliente_address):
+                print('Error: La cuenta cliente no es válida')
+                exit()
+
+            depositar_garantia(cliente_address, abi_contrato, monto)
+            clientes.append(nuevo_cliente)
         elif opcion == "4":
             print("Saliendo del programa...")
             break
