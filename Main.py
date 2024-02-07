@@ -55,8 +55,8 @@ def main():
             #PRUEBA: 1-se ejecuta dos veces para ver el mensaje "YA estás dado de alta"
             #PRUEBA: 2-se ejecuta introduciendo un address que no pertenece al prestamista"
         elif opcion == "3":
-            monto = int('Introduce la garantia: ')
-            cliente_address = input('Introduce el address del prestamista: ')
+            monto = int(input('Introduce la garantia: '))
+            cliente_address = input('Introduce el address del cliente: ')
             #Check if the input address is correct
             #PRUEBA: verificamos addresses
             if not web3.is_checksum_address(cliente_address):
@@ -64,7 +64,8 @@ def main():
                 exit()
 
             depositar_garantia(cliente_address, abi_contrato, monto)
-            clientes.append(nuevo_cliente)
+            if cliente_address not in clientes:
+                clientes.append(cliente_address)
         elif opcion == "4":
             print("Saliendo del programa...")
             break
