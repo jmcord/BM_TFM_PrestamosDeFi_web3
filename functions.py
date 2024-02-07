@@ -129,7 +129,7 @@ def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo):
         return
     
     # Aprobar el préstamo
-    tx_hash = instancia_sc.functions.aprobarPrestamo(prestatario_address, id_prestamo).call()
+    tx_hash = instancia_sc.functions.aprobarPrestamo(prestatario_address, id_prestamo).call({'from': prestatario_address})
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
     
     print("Transacción confirmada. Préstamo aprobado.")
