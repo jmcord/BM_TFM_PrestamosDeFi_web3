@@ -87,7 +87,42 @@ def solicitar_prestamo(cliente_address, abi_contrato, monto, plazo):
 
 
 
-
+def aprobar_prestamo(prestatario_address, id_prestamo, abi_contrato):
+    # Conexión a la red Ganache
+    web3 = Web3(Web3.HTTPProvider(ganache_url))
+    abi_contrato = json.loads(abi_contrato)
+    instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
+    
+    # Verificar si el empleado prestamista está llamando a la función
+    empleado_prestamista = prestatario_address #MEJORA: acceder al mapping y ver si está ahí
+    if empleado_prestamista != prestatario_address:
+        print("Error: No tienes permiso para llamar a esta función.")
+        return
+    
+    # Obtener los detalles del préstamo
+    prestatario = instancia_sc.functions.clientes(prestatario_address).call()
+    prestamos_ids = prestatario[2]
+    if id_prestamo not in prestamos_ids:
+        print("Error: Préstamo no asignado al prestatario.")
+        return
+    
+    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call()
+    if prestamo[6]:
+        print("Error: Préstamo ya aprobado.")
+        return
+    if prestamo[7]:
+        print("Error: Préstamo ya reembolsado.")
+        return
+    if prestamo[8]:
+        print("Error: Préstamo ya liquidado.")
+        return
+    
+    # Aprobar el préstamo
+    tx_hash = instancia_sc.functions.aprobarPrestamo(prestatario_address, id_prestamo).transact({'from': web3.eth.defaultAccount})
+    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+    
+    print("Transacción confirmada. Préstamo aprobado.")
+    return receipt
 
 
 

@@ -1,5 +1,5 @@
 
-from functions import alta_prestamista, alta_cliente, depositar_garantia, solicitar_prestamo
+from functions import alta_prestamista, alta_cliente, depositar_garantia, solicitar_prestamo, aprobar_prestamo
 from env import *
 from web3 import Web3
 
@@ -14,17 +14,10 @@ def menu():
     print("2. Alta de cliente")
     print("3. Depositar Garantia")
     print("4. solicitar prestamo")
+    print("5. aprobar prestamo")
     print("10. Salir")
 
 
-
-def opcion_2():
-    print("Has seleccionado la opción 2.")
-    # Aquí iría la lógica para la opción 2
-
-def opcion_3():
-    print("Has seleccionado la opción 3.")
-    # Aquí iría la lógica para la opción 3
 
 def main():
     while True:
@@ -79,6 +72,17 @@ def main():
                 exit()
 
             solicitar_prestamo(cliente_address, abi_contrato, monto, plazo)
+            #PRUEBAS: 1-solicitar más ETH que los depositados en garantía
+        elif opcion == "5":
+            prestamo_id = int(input('Introduce el id del prestamo: '))
+            prestamista_address = input('Introduce el address del cliente: ')
+            #Check if the input address is correct
+            #PRUEBA: verificamos addresses
+            if not web3.is_checksum_address(prestamista_address):
+                print('Error: La cuenta prestamista no es válida')
+                exit()
+
+            aprobar_prestamo(prestamista_address, abi_contrato, prestamo_id)
             #PRUEBAS: 1-solicitar más ETH que los depositados en garantía
         elif opcion == "10":
             print("Saliendo del programa...")
