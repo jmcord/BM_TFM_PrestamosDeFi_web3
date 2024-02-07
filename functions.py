@@ -111,25 +111,25 @@ def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo):
         return
     
     # Obtener los detalles del préstamo
-    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call()
+    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call({'from': prestatario_address})
     #MEJORA: llamar a la lista de ids y ver si está ahí y comprobar:
     #if id_prestamo not in prestamos_ids:
     #    print("Error: Préstamo no asignado al prestatario.")
     #    return
     
-    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call()
-    if prestamo[6]:
+    
+    if prestamo[7]:
         print("Error: Préstamo ya aprobado.")
         return
-    if prestamo[7]:
+    if prestamo[8]:
         print("Error: Préstamo ya reembolsado.")
         return
-    if prestamo[8]:
+    if prestamo[9]:
         print("Error: Préstamo ya liquidado.")
         return
     
     # Aprobar el préstamo
-    tx_hash = instancia_sc.functions.aprobarPrestamo(prestatario_address, id_prestamo).transact({'from': web3.eth.defaultAccount})
+    tx_hash = instancia_sc.functions.aprobarPrestamo(prestatario_address, id_prestamo).call()
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
     
     print("Transacción confirmada. Préstamo aprobado.")
