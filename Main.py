@@ -1,5 +1,5 @@
 
-from functions import alta_prestamista
+from functions import alta_prestamista, alta_cliente
 from env import *
 from web3 import Web3
 
@@ -11,7 +11,7 @@ clientes = []
 def menu():
     print("Bienvenido al menú de opciones:")
     print("1. Alta de prestamista")
-    print("2. Opción 2")
+    print("2. Alta de cliente")
     print("3. Opción 3")
     print("4. Salir")
 
@@ -40,7 +40,17 @@ def main():
             prestamistas.append(nuevo_prestamista)
             #PRUEBA: se ejecuta dos veces para ver el mensaje "YA estás dado de alta"
         elif opcion == "2":
-            opcion_2()
+            nuevo_cliente = input('Introduce el address del nuevo cliente: ')
+            prestamista_address = input('Introduce el address del prestamista: ')
+            #Check if the input address is correct
+            if not web3.is_checksum_address(nuevo_cliente):
+                print('Error: La cuenta cliente no es válida')
+                exit()
+            if not web3.is_checksum_address(nuevo_cliente):
+                print('Error: La cuenta prestamista no es válida')
+                exit()
+            alta_cliente(nuevo_cliente, prestamista_address, abi_contrato)
+            clientes.append(nuevo_cliente)
         elif opcion == "3":
             opcion_3()
         elif opcion == "4":
@@ -48,6 +58,7 @@ def main():
             break
         else:
             print("Opción no válida. Por favor, selecciona una opción válida.")
+
 
 if __name__ == "__main__":
     main()
