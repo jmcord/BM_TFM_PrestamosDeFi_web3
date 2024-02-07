@@ -118,13 +118,13 @@ def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo):
     #    return
     
     
-    if prestamo[7]:
+    if prestamo[6]:
         print("Error: Préstamo ya aprobado.")
         return
-    if prestamo[8]:
+    if prestamo[7]:
         print("Error: Préstamo ya reembolsado.")
         return
-    if prestamo[9]:
+    if prestamo[8]:
         print("Error: Préstamo ya liquidado.")
         return
     
