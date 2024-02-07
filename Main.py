@@ -75,14 +75,15 @@ def main():
             #PRUEBAS: 1-solicitar más ETH que los depositados en garantía
         elif opcion == "5":
             prestamo_id = int(input('Introduce el id del prestamo: '))
-            prestamista_address = input('Introduce el address del cliente: ')
+            prestamista_address = input('Introduce el address del prestamista: ')
+            prestatario_address = input('Introduce el address del cliente: ')
             #Check if the input address is correct
             #PRUEBA: verificamos addresses
             if not web3.is_checksum_address(prestamista_address):
                 print('Error: La cuenta prestamista no es válida')
                 exit()
 
-            aprobar_prestamo(prestamista_address, abi_contrato, prestamo_id)
+            aprobar_prestamo(prestatario_address, abi_contrato, prestamo_id, prestamista_address)
             #PRUEBAS: 1-solicitar más ETH que los depositados en garantía
         elif opcion == "10":
             print("Saliendo del programa...")

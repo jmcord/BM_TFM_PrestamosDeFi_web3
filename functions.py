@@ -98,7 +98,8 @@ def obtener_detalle_de_prestamo(cliente_address, id_, abi_contrato):
     return detalle_prestamo
 
 
-def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo):
+def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo, prestamista_address):
+    #MEJORA: modificar el struct de Prestamo para que incluya el prestamista, y acceder por prestamo[i] en lugar de por parámetro
     # Conexión a la red Ganache
     web3 = Web3(Web3.HTTPProvider(ganache_url))
     abi_contrato = json.loads(abi_contrato)
@@ -111,7 +112,7 @@ def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo):
         return
     
     # Obtener los detalles del préstamo
-    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call({'from': prestatario_address})
+    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call({'from': prestamista_address})
     #MEJORA: llamar a la lista de ids y ver si está ahí y comprobar:
     #if id_prestamo not in prestamos_ids:
     #    print("Error: Préstamo no asignado al prestatario.")
