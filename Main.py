@@ -84,7 +84,9 @@ def main():
                 exit()
 
             aprobar_prestamo(prestatario_address, abi_contrato, prestamo_id, prestamista_address)
-            #PRUEBAS: 1-solicitar más ETH que los depositados en garantía
+            #PRUEBAS: 1-solicitar dos veces el mismo id
+            #PRUEBAS: 2-utilizar un id incorrecto
+            #PRUEBAS: 3-utilizar un prestamista no dado de alta
         elif opcion == "10":
             print("Saliendo del programa...")
             break
