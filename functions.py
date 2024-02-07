@@ -67,20 +67,23 @@ def solicitar_prestamo(cliente_address, abi_contrato, monto, plazo):
     # Obtener el saldo de garantía del cliente
     saldo_garantia = instancia_sc.functions.clientes(cliente_address).call()[1]
 
+    # Convertir el monto a wei
+    monto_wei = web3.to_wei(monto, 'ether')
+
     # Verificar si el cliente tiene suficiente saldo de garantía
-    if saldo_garantia < monto:
+    if saldo_garantia < monto_wei:
         print("Error: No tienes suficiente saldo de garantía para solicitar este préstamo")
         return None
 
     # Crear la transacción para solicitar el préstamo
-    tx_hash = instancia_sc.functions.solicitarPrestamos(monto, plazo).transact({'from': cliente_address})
+    tx_hash = instancia_sc.functions.solicitarPrestamos(monto_wei, plazo).transact({'from': cliente_address})
 
     # Esperar la confirmación de la transacción y obtener el ID del nuevo préstamo
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
-    nuevo_id_prestamo = receipt['events']['SolicitudPrestamo']['returnValues']['0']
 
-    print("Solicitud de préstamo realizada con éxito. ID del nuevo préstamo:", nuevo_id_prestamo)
-    return nuevo_id_prestamo
+
+    print("Solicitud de préstamo realizada con éxito")
+
 
 
 

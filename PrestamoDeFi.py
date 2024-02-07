@@ -60,21 +60,3 @@ else:
     
     
     
-    
-        # Segundo, enviar el monto de ether al contrato como garantía
-     nonce = web3.eth.get_transaction_count(cliente_address)
-     tx = {
-        'nonce': nonce,
-        'to': contractAddress,
-        'value': web3.to_wei(monto, 'ether'),
-        'gas': 2000000,
-        'gasPrice': web3.to_wei('50', 'gwei')
-    }
-
-     try:
-         signed_tx = web3.eth.account.sign_transaction(tx, cliente_private_key)
-         tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-         print('Transacción de garantía realizada.\nNúmero de transacción:', web3.to_hex(tx_hash))
-     except ValueError:
-        print('Error: firma no válida')
-        

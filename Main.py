@@ -79,7 +79,7 @@ def main():
                 exit()
 
             solicitar_prestamo(cliente_address, abi_contrato, monto, plazo)
-
+            #PRUEBAS: 1-solicitar más ETH que los depositados en garantía
         elif opcion == "10":
             print("Saliendo del programa...")
             break
