@@ -67,6 +67,7 @@ def main():
             depositar_garantia(cliente_address, abi_contrato, monto)
             if cliente_address not in clientes:
                 clientes.append(cliente_address)
+            #PRUEBA: 1-tratar de depositar una cantidad mayor a 100 ETH
         elif opcion == "4":
             monto = int(input('Introduce el monto del prestamo: '))
             cliente_address = input('Introduce el address del cliente: ')
