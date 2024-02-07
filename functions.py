@@ -66,3 +66,28 @@ def depositar_garantia(cliente_address, abi_contrato, monto):
          print('Transacción de garantía realizada.\nNúmero de transacción:', web3.to_hex(tx_hash))
      except ValueError:
         print('Error: firma no válida')
+        
+        
+def solicitar_prestamo(cliente_address, abi_contrato, monto, plazo):
+    # Conexión a la red Ganache
+    web3 = Web3(Web3.HTTPProvider(ganache_url))
+    abiContrato = json.loads(abi_contrato)
+    instancia_sc = web3.eth.contract(address=contractAddress, abi=abiContrato)
+
+    # Obtener el saldo de garantía del cliente
+    saldo_garantia = instancia_sc.functions.clientes(cliente_address).call()[1]
+
+    # Verificar si el cliente tiene suficiente saldo de garantía
+    if saldo_garantia < monto:
+        print("Error: No tienes suficiente saldo de garantía para solicitar este préstamo")
+        return None
+
+    # Crear la transacción para solicitar el préstamo
+    tx_hash = instancia_sc.functions.solicitarPrestamos(monto, plazo).transact({'from': cliente_address})
+
+    # Esperar la confirmación de la transacción y obtener el ID del nuevo préstamo
+    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+    nuevo_id_prestamo = receipt['events']['SolicitudPrestamo']['returnValues']['0']
+
+    print("Solicitud de préstamo realizada con éxito. ID del nuevo préstamo:", nuevo_id_prestamo)
+    return nuevo_id_prestamo

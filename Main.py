@@ -1,5 +1,5 @@
 
-from functions import alta_prestamista, alta_cliente, depositar_garantia
+from functions import alta_prestamista, alta_cliente, depositar_garantia, solicitar_prestamo
 from env import *
 from web3 import Web3
 
@@ -13,6 +13,7 @@ def menu():
     print("1. Alta de prestamista")
     print("2. Alta de cliente")
     print("3. Depositar Garantia")
+    print("4. solicitar prestamo")
     print("10. Salir")
 
 
@@ -67,6 +68,18 @@ def main():
             if cliente_address not in clientes:
                 clientes.append(cliente_address)
         elif opcion == "4":
+            monto = int(input('Introduce el monto del prestamo: '))
+            cliente_address = input('Introduce el address del cliente: ')
+            plazo = int(input('Introduce el plazo en segundos: '))
+            #Check if the input address is correct
+            #PRUEBA: verificamos addresses
+            if not web3.is_checksum_address(cliente_address):
+                print('Error: La cuenta cliente no es válida')
+                exit()
+
+            solicitar_prestamo(cliente_address, abi_contrato, monto, plazo)
+
+        elif opcion == "10":
             print("Saliendo del programa...")
             break
         else:
