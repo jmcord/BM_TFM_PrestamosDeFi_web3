@@ -108,7 +108,6 @@ def main():
         elif opcion == "7":
             prestamo_id = int(input('Introduce el id del prestamo: '))
             prestatario_address = input('Introduce el address del cliente: ')
-            prestamista_address = input('Introduce el address del prestamista: ')
             #Check if the input address is correct
             #PRUEBA: verificamos addresses
             if not web3.is_checksum_address(prestatario_address):
@@ -147,7 +146,8 @@ def main():
             #PRUEBAS: 1-introducir un id inexistente
             #PRUEBAS: 2-introducir un address inexistente
 
-  
+    
+      
         elif opcion == "0":
             print("Saliendo del programa...")
             break

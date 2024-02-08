@@ -232,7 +232,7 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
     instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
 
     # Obtener el nonce
-    nonce = web3.eth.getTransactionCount(prestatario_address)
+    nonce = web3.eth.get_transaction_count(prestatario_address)
 
     # Construir la transacción
     tx = {
@@ -255,10 +255,10 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
         print("Enviando la transacción sin firmar...")
 
         # Enviar la transacción sin firmar
-        tx_hash = web3.eth.sendTransaction(tx)
+        tx_hash = web3.eth.send_transaction(tx)
 
     # Esperar la confirmación de la transacción
-    receipt = web3.eth.waitForTransactionReceipt(tx_hash)
+    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
 
     print("Transacción confirmada. Garantía liquidada con éxito.")
     return receipt
