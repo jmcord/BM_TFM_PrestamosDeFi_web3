@@ -243,11 +243,19 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
         'gasPrice': web3.toWei('50', 'gwei')
     }
 
-    # Firmar la transacción
-    signed_tx = web3.eth.account.sign_transaction(tx, empleado_private_key)
+    try:
+        # Firmar la transacción
+        signed_tx = web3.eth.account.sign_transaction(tx, empleado_private_key)
 
-    # Enviar la transacción firmada
-    tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
+        # Enviar la transacción firmada
+        tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+
+    except ValueError as e:
+        print("Error al firmar y enviar la transacción:", e)
+        print("Enviando la transacción sin firmar...")
+
+        # Enviar la transacción sin firmar
+        tx_hash = web3.eth.sendTransaction(tx)
 
     # Esperar la confirmación de la transacción
     receipt = web3.eth.waitForTransactionReceipt(tx_hash)
