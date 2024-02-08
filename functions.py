@@ -154,7 +154,7 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
     prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(cliente_address, id_prestamo).call({'from': prestamista_address})
     
     #Obtener el monto
-    monto = int(prestamo[2])*10**18
+    monto = int(prestamo[2])
     # Obtener el nonce
     nonce = web3.eth.get_transaction_count(cliente_address)
     
@@ -170,7 +170,7 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
         }
     
     # Firmar la transacción
-    signed_tx = web3.eth.account.sign_transaction(tx, cliente_private_key)
+    signed_tx = web3.eth.account.sign_transaction(tx, cliente2_private_key)
 
     # Enviar la transacción firmada
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -178,7 +178,7 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
     # Esperar la confirmación de la transacción
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
     # Llama a la función reembolsarPrestamo del contrato para actualizar el prestamo
-    tx_hash = instancia_sc.functions.reembolsarPrestamo(id_prestamo).transact({'from': cliente_address})
+    tx_hash = instancia_sc.functions.reembolsarPrestamo(id_prestamo).transact({'from': cliente_address, 'value': 0})
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
     print("Transacción confirmada. Préstamo reembolsado con éxito.")
     return receipt
