@@ -2,6 +2,7 @@ from web3 import Web3
 import json
 from web3.middleware import geth_poa_middleware
 from eth_account import Account
+from env import *
 # URL de Infura para la red de Ethereum (debes reemplazar
 "TU-PROYECTO-ID" #con tu propio ID de proyecto de Infura)
 ganache_url = "HTTP://127.0.0.1:7545"
@@ -59,4 +60,44 @@ else:
     
     
     
+     # Conexión a la red Ganache
+    ganache_url = "HTTP://127.0.0.1:7545"
+    # Crear una instancia de Web3 y conectarse a Infura
+    web3 = Web3(Web3.HTTPProvider(ganache_url))
+    # Verificar la conexión
+    if web3.is_connected():
+        print("Conexión exitosa a Ganache")
+    else:
+        print("No se pudo conectar a Ganache. Por favor, verifica la URL o tu conexión a Internet.")
+    abi_contrato = json.loads(abi_contrato)
+    instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
+    # Obtener los detalles del préstamo
+    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(cliente_address, id_prestamo).call({'from': prestamista_address})
     
+    #Obtener el monto
+    monto = int(prestamo[2])*10**18
+    # Obtener el nonce
+    nonce = web3.eth.get_transaction_count(cliente_address)
+    
+    # Construir la transacción
+    tx = {
+        'nonce': nonce,
+        'to': contractAddress,
+        'data': instancia_sc.encodeABI(fn_name='reembolsarPrestamo', args=[id_prestamo]),
+        'gas': 2000000,
+        'gasPrice': web3.to_wei('50', 'gwei'),
+        'value': monto,
+        'from': cliente_address #Ya que está en el modificador
+    }
+    
+    # Firmar la transacción
+    signed_tx = web3.eth.account.sign_transaction(tx, cliente_private_key)
+    with open('signed_tx.pickle', 'wb') as f:
+        pickle.dump(signed_tx, f)
+    # Enviar la transacción firmada
+    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    
+    # Esperar la confirmación de la transacción
+    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+    
+    print("Transacción confirmada. Préstamo reembolsado con éxito.")   

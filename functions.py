@@ -139,11 +139,11 @@ def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo, prestamista
 
 
 def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_contrato, cliente_private_key):
-    # Conexión a la red Ganache
+# Conexión a la red Ganache
     ganache_url = "HTTP://127.0.0.1:7545"
-    # Crear una instancia de Web3 y conectarse a Infura
+# Crear una instancia de Web3 y conectarse a Infura
     web3 = Web3(Web3.HTTPProvider(ganache_url))
-    # Verificar la conexión
+# Verificar la conexión
     if web3.is_connected():
         print("Conexión exitosa a Ganache")
     else:
@@ -160,19 +160,18 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
     
     # Construir la transacción
     tx = {
-        'nonce': nonce,
-        'to': contractAddress,
+        'nonce': web3.eth.get_transaction_count(cliente_address),
+        'to': socio_principal,
         'data': instancia_sc.encodeABI(fn_name='reembolsarPrestamo', args=[id_prestamo]),
         'gas': 2000000,
         'gasPrice': web3.to_wei('50', 'gwei'),
         'value': monto,
         'from': cliente_address #Ya que está en el modificador
-    }
+        }
     
     # Firmar la transacción
     signed_tx = web3.eth.account.sign_transaction(tx, cliente_private_key)
-    with open('signed_tx.pickle', 'wb') as f:
-        pickle.dump(signed_tx, f)
+
     # Enviar la transacción firmada
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
     
