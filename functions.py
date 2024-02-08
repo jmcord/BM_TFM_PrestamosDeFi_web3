@@ -219,7 +219,7 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
     web3 = Web3(Web3.HTTPProvider(ganache_url))
 
     # Verificar la conexión
-    if web3.isConnected():
+    if web3.is_connected():
         print("Conexión exitosa a Ganache")
     else:
         print("No se pudo conectar a Ganache. Por favor, verifica la URL o tu conexión a Internet.")
@@ -232,15 +232,16 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
     instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
 
     # Obtener el nonce
-    nonce = web3.eth.get_transaction_count(prestatario_address)
+    nonce = web3.eth.get_transaction_count(prestatario_address, 'pending')
 
     # Construir la transacción
     tx = {
         'nonce': nonce,
         'to': contractAddress,
-        'data': instancia_sc.encodeABI(fn_name='liquidarGarantia', args=[id_prestamo]),
+        'data': instancia_sc.encodeABI(fn_name='liquidarGarantia', args=[prestatario_address, id_prestamo]),
         'gas': 2000000,
-        'gasPrice': web3.toWei('50', 'gwei')
+        'gasPrice': web3.to_wei('50', 'gwei'),
+        'from': prestatario_address
     }
 
     try:
