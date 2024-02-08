@@ -233,16 +233,16 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
     instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
 
     # Obtener el nonce
-    nonce = web3.eth.get_transaction_count(prestamista_address)
+    nonce = web3.eth.get_transaction_count(contractAddress)
 
     # Construir la transacción
     tx = {
         'nonce': nonce,
-        'to': contractAddress,
-        'data': instancia_sc.encodeABI(fn_name='liquidarGarantia', args=[prestamista_address, id_prestamo]),
+        'to': socio_principal,
+        'data': instancia_sc.encodeABI(fn_name='liquidarGarantia', args=[prestatario_address, id_prestamo]),
         'gas': 2000000,
         'gasPrice': web3.to_wei('50', 'gwei'),
-        'from': prestatario_address
+        'from': contractAddress
     }
 
     try:
@@ -261,6 +261,8 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
 
     # Esperar la confirmación de la transacción
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
-
+   # Llama a la función liquidarPrestamo del contrato para actualizar el prestamo
+    tx_hash = instancia_sc.functions.liquidarPrestamo(prestatario_address,id_prestamo).transact({'from': contractAddress, 'value': 0})
+    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
     print("Transacción confirmada. Garantía liquidada con éxito.")
     return receipt
