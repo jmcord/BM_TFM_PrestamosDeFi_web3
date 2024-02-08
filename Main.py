@@ -1,5 +1,5 @@
 
-from functions import alta_prestamista, alta_cliente, depositar_garantia, solicitar_prestamo, aprobar_prestamo, reembolsar_prestamo, obtener_detalle_de_prestamo
+from functions import alta_prestamista, alta_cliente, depositar_garantia, solicitar_prestamo, aprobar_prestamo, reembolsar_prestamo, obtener_detalle_de_prestamo, obtener_prestamos_por_prestatario
 from env import *
 from web3 import Web3
 
@@ -105,7 +105,35 @@ def main():
             #PRUEBAS: 1-reembolsar dos veces el mismo id
             #PRUEBAS: 2-utilizar un id incorrecto
             
+        elif opcion == "8":
+            prestatario_address = input('Introduce el address del cliente: ')
+            #Check if the input address is correct
+            #PRUEBA: verificamos addresses
+            if not web3.is_checksum_address(prestatario_address):
+                print('Error: La cuenta prestatario no es válida')
+                exit()
+
+            prestamos = obtener_prestamos_por_prestatario(prestatario_address, abi_contrato)
+            print(prestamos)
+            #PRUEBAS: 1-introducir un address inexistente
+      
+
             
+        elif opcion == "9":
+            prestamo_id = int(input('Introduce el id del prestamo: '))
+            prestatario_address = input('Introduce el address del cliente: ')
+            #Check if the input address is correct
+            #PRUEBA: verificamos addresses
+            if not web3.is_checksum_address(prestatario_address):
+                print('Error: La cuenta prestatario no es válida')
+                exit()
+
+            prestamo = obtener_detalle_de_prestamo(prestatario_address, prestamo_id, abi_contrato)
+            print(prestamo)
+            #PRUEBAS: 1-introducir un id inexistente
+            #PRUEBAS: 2-introducir un address inexistente
+
+    
             
         elif opcion == "9":
             prestamo_id = int(input('Introduce el id del prestamo: '))

@@ -194,3 +194,63 @@ def reembolsar_prestamo2(id_prestamo, cliente_address, abi_contrato):
     
     print("Transacción confirmada. Préstamo reembolsado con éxito.")
     return receipt
+
+
+def obtener_prestamos_por_prestatario(cliente_address, abi_contrato):
+    # Conexión a la red Ganache
+    web3 = Web3(Web3.HTTPProvider(ganache_url))
+    abi_contrato = json.loads(abi_contrato)
+    instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
+    
+    # Llama a la función obtenerDetalleDePrestamo del contrato
+    obtener_prestamos = instancia_sc.functions.obtenerPrestamosPorPrestatario(cliente_address).call()
+    
+    # La variable 'obtener prestamos' ahora contiene la información del préstamo
+    print("Prestamos:", obtener_prestamos)
+    return obtener_prestamos
+
+
+import json
+from web3 import Web3
+
+def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_private_key):
+    # Conexión a la red Ganache
+    ganache_url = "http://127.0.0.1:7545"
+    web3 = Web3(Web3.HTTPProvider(ganache_url))
+
+    # Verificar la conexión
+    if web3.isConnected():
+        print("Conexión exitosa a Ganache")
+    else:
+        print("No se pudo conectar a Ganache. Por favor, verifica la URL o tu conexión a Internet.")
+        return
+
+    # Convertir el ABI del contrato a un objeto Python
+    abi_contrato = json.loads(abi_contrato)
+
+    # Crear una instancia del contrato
+    instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
+
+    # Obtener el nonce
+    nonce = web3.eth.getTransactionCount(prestatario_address)
+
+    # Construir la transacción
+    tx = {
+        'nonce': nonce,
+        'to': contractAddress,
+        'data': instancia_sc.encodeABI(fn_name='liquidarGarantia', args=[id_prestamo]),
+        'gas': 2000000,
+        'gasPrice': web3.toWei('50', 'gwei')
+    }
+
+    # Firmar la transacción
+    signed_tx = web3.eth.account.sign_transaction(tx, empleado_private_key)
+
+    # Enviar la transacción firmada
+    tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
+
+    # Esperar la confirmación de la transacción
+    receipt = web3.eth.waitForTransactionReceipt(tx_hash)
+
+    print("Transacción confirmada. Garantía liquidada con éxito.")
+    return receipt
