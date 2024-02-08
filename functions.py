@@ -137,7 +137,7 @@ def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo, prestamista
     return receipt
 
 
-def reembolsar_prestamo(id_prestamo, cliente_address, abi_contrato):
+def reembolsar_prestamo2(id_prestamo, cliente_address, abi_contrato):
     # Conexión a la red Ganache
     web3 = Web3(Web3.HTTPProvider(ganache_url))
     abi_contrato = json.loads(abi_contrato)
@@ -145,6 +145,39 @@ def reembolsar_prestamo(id_prestamo, cliente_address, abi_contrato):
     
     # Llama a la función reembolsarPrestamo del contrato
     tx_hash = instancia_sc.functions.reembolsarPrestamo(id_prestamo).transact({'from': cliente_address})
+    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+    
+    print("Transacción confirmada. Préstamo reembolsado con éxito.")
+    return receipt
+
+
+def reembolsar_prestamo(id_prestamo, prestatario_address cliente_address, abi_contrato, cliente_private_key):
+    # Conexión a la red Ganache
+    web3 = Web3(Web3.HTTPProvider(ganache_url))
+    abi_contrato = json.loads(abi_contrato)
+    instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
+    # Obtener los detalles del préstamo
+    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call({'from': prestamista_address})
+    # Obtener el nonce
+    nonce = web3.eth.get_transaction_count(cliente_address)
+    
+    # Construir la transacción
+    tx = {
+        'nonce': nonce,
+        'to': contractAddress,
+        'data': instancia_sc.encodeABI(fn_name='reembolsarPrestamo', args=[id_prestamo]),
+        'gas': 2000000,
+        'gasPrice': web3.to_wei('50', 'gwei'),
+        'value': 0
+    }
+    
+    # Firmar la transacción
+    signed_tx = web3.eth.account.sign_transaction(tx, cliente_private_key)
+    
+    # Enviar la transacción firmada
+    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    
+    # Esperar la confirmación de la transacción
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
     
     print("Transacción confirmada. Préstamo reembolsado con éxito.")

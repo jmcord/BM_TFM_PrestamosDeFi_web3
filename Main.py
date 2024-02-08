@@ -15,7 +15,7 @@ def menu():
     print("3. Depositar Garantia")
     print("4. solicitar prestamo")
     print("5. aprobar prestamo")
-    print("5. reembolsar prestamo")
+    print("6. reembolsar prestamo")
     print("10. Salir")
 
 
@@ -93,14 +93,14 @@ def main():
             prestatario_address = input('Introduce el address del cliente: ')
             #Check if the input address is correct
             #PRUEBA: verificamos addresses
-            if not web3.is_checksum_address(prestamista_address):
-                print('Error: La cuenta prestamista no es válida')
+            if not web3.is_checksum_address(prestatario_address):
+                print('Error: La cuenta prestatario no es válida')
                 exit()
 
-            reembolsar_prestamo(prestamo_id, prestatario_address, abi_contrato)
-            #PRUEBAS: 1-solicitar dos veces el mismo id
+            reembolsar_prestamo(prestamo_id, prestatario_address, abi_contrato, cliente_private_key)
+            #PRUEBAS: 1-reembolsar dos veces el mismo id
             #PRUEBAS: 2-utilizar un id incorrecto
-            #PRUEBAS: 3-utilizar un prestamista no dado de alta
+
         elif opcion == "10":
             print("Saliendo del programa...")
             break
