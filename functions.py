@@ -241,7 +241,7 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
         'data': instancia_sc.encodeABI(fn_name='liquidarGarantia', args=[prestatario_address, id_prestamo]),
         'gas': 2000000,
         'gasPrice': web3.to_wei('50', 'gwei'),
-        'from': prestamista_address
+        'from': prestatario_address
     }
 
     try:
