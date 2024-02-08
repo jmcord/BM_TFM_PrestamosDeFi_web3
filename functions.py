@@ -137,19 +137,6 @@ def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo, prestamista
     return receipt
 
 
-def reembolsar_prestamo2(id_prestamo, cliente_address, abi_contrato):
-    # Conexión a la red Ganache
-    web3 = Web3(Web3.HTTPProvider(ganache_url))
-    abi_contrato = json.loads(abi_contrato)
-    instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
-    
-    # Llama a la función reembolsarPrestamo del contrato
-    tx_hash = instancia_sc.functions.reembolsarPrestamo(id_prestamo).transact({'from': cliente_address})
-    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
-    
-    print("Transacción confirmada. Préstamo reembolsado con éxito.")
-    return receipt
-
 
 def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_contrato, cliente_private_key):
     # Conexión a la red Ganache
@@ -160,7 +147,7 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
     prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(cliente_address, id_prestamo).call({'from': prestamista_address})
     
     #Obtener el monto
-    monto = 
+    monto = prestamo[2]*10*18
     # Obtener el nonce
     nonce = web3.eth.get_transaction_count(cliente_address)
     
