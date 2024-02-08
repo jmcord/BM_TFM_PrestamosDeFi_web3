@@ -110,7 +110,6 @@ def main():
         elif opcion == "9":
             prestamo_id = int(input('Introduce el id del prestamo: '))
             prestatario_address = input('Introduce el address del cliente: ')
-            prestamista_address = input('Introduce el address del prestamista: ')
             #Check if the input address is correct
             #PRUEBA: verificamos addresses
             if not web3.is_checksum_address(prestatario_address):
