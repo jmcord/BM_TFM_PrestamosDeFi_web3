@@ -151,13 +151,16 @@ def reembolsar_prestamo2(id_prestamo, cliente_address, abi_contrato):
     return receipt
 
 
-def reembolsar_prestamo(id_prestamo, prestatario_address cliente_address, abi_contrato, cliente_private_key):
+def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_contrato, cliente_private_key):
     # Conexión a la red Ganache
     web3 = Web3(Web3.HTTPProvider(ganache_url))
     abi_contrato = json.loads(abi_contrato)
     instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
     # Obtener los detalles del préstamo
-    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call({'from': prestamista_address})
+    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(cliente_address, id_prestamo).call({'from': prestamista_address})
+    
+    #Obtener el monto
+    monto = 
     # Obtener el nonce
     nonce = web3.eth.get_transaction_count(cliente_address)
     
@@ -168,7 +171,7 @@ def reembolsar_prestamo(id_prestamo, prestatario_address cliente_address, abi_co
         'data': instancia_sc.encodeABI(fn_name='reembolsarPrestamo', args=[id_prestamo]),
         'gas': 2000000,
         'gasPrice': web3.to_wei('50', 'gwei'),
-        'value': 0
+        'value': monto
     }
     
     # Firmar la transacción

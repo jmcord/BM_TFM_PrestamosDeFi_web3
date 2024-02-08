@@ -97,7 +97,7 @@ def main():
                 print('Error: La cuenta prestatario no es válida')
                 exit()
 
-            reembolsar_prestamo(prestamo_id, prestatario_address, abi_contrato, cliente_private_key)
+            reembolsar_prestamo(prestamo_id, prestamista_address, prestatario_address, abi_contrato, cliente_private_key)
             #PRUEBAS: 1-reembolsar dos veces el mismo id
             #PRUEBAS: 2-utilizar un id incorrecto
 
