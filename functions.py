@@ -140,7 +140,14 @@ def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo, prestamista
 
 def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_contrato, cliente_private_key):
     # Conexión a la red Ganache
+    ganache_url = "HTTP://127.0.0.1:7545"
+    # Crear una instancia de Web3 y conectarse a Infura
     web3 = Web3(Web3.HTTPProvider(ganache_url))
+    # Verificar la conexión
+    if web3.is_connected():
+        print("Conexión exitosa a Ganache")
+    else:
+        print("No se pudo conectar a Ganache. Por favor, verifica la URL o tu conexión a Internet.")
     abi_contrato = json.loads(abi_contrato)
     instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
     # Obtener los detalles del préstamo
