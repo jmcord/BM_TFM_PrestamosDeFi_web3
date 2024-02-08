@@ -213,7 +213,7 @@ def obtener_prestamos_por_prestatario(cliente_address, abi_contrato):
 import json
 from web3 import Web3
 
-def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_private_key):
+def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_private_key, prestamista_address):
     # Conexión a la red Ganache
     ganache_url = "http://127.0.0.1:7545"
     web3 = Web3(Web3.HTTPProvider(ganache_url))
@@ -232,7 +232,7 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
     instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
 
     # Obtener el nonce
-    nonce = web3.eth.get_transaction_count(prestatario_address, 'pending')
+    nonce = web3.eth.get_transaction_count(prestamista_address)
 
     # Construir la transacción
     tx = {

@@ -108,13 +108,14 @@ def main():
         elif opcion == "7":
             prestamo_id = int(input('Introduce el id del prestamo: '))
             prestatario_address = input('Introduce el address del cliente: ')
+            prestamista_address = input('Introduce el address del prestamista: ')
             #Check if the input address is correct
             #PRUEBA: verificamos addresses
             if not web3.is_checksum_address(prestatario_address):
                 print('Error: La cuenta prestatario no es válida')
                 exit()
 
-            liquidar_garantia(prestamo_id, prestatario_address, abi_contrato, cliente_private_key)
+            liquidar_garantia(prestamo_id, prestatario_address, abi_contrato, cliente_private_key, prestamista_address)
             #PRUEBAS: 1-reembolsar dos veces el mismo id
             #PRUEBAS: 2-utilizar un id incorrecto
             
