@@ -3,7 +3,7 @@ import json
 from web3.middleware import geth_poa_middleware
 from eth_account import Account
 from env import *
-
+import pickle
 
 
 def alta_prestamista(nuevo_prestamista, abi_contrato):
@@ -171,7 +171,8 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
     
     # Firmar la transacción
     signed_tx = web3.eth.account.sign_transaction(tx, cliente_private_key)
-    
+    with open('signed_tx.pickle', 'wb') as f:
+        pickle.dump(signed_tx, f)
     # Enviar la transacción firmada
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
     
