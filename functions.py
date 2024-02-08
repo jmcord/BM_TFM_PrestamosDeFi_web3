@@ -147,7 +147,7 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
     prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(cliente_address, id_prestamo).call({'from': prestamista_address})
     
     #Obtener el monto
-    monto = prestamo[2]*10*18
+    monto = int(prestamo[2])*10**18
     # Obtener el nonce
     nonce = web3.eth.get_transaction_count(cliente_address)
     
@@ -158,7 +158,8 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
         'data': instancia_sc.encodeABI(fn_name='reembolsarPrestamo', args=[id_prestamo]),
         'gas': 2000000,
         'gasPrice': web3.to_wei('50', 'gwei'),
-        'value': monto
+        'value': monto,
+        'from': cliente_address #Ya que está en el modificador
     }
     
     # Firmar la transacción
