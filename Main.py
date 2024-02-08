@@ -1,5 +1,5 @@
 
-from functions import alta_prestamista, alta_cliente, depositar_garantia, solicitar_prestamo, aprobar_prestamo
+from functions import alta_prestamista, alta_cliente, depositar_garantia, solicitar_prestamo, aprobar_prestamo, reembolsar_prestamo
 from env import *
 from web3 import Web3
 
@@ -15,6 +15,7 @@ def menu():
     print("3. Depositar Garantia")
     print("4. solicitar prestamo")
     print("5. aprobar prestamo")
+    print("5. reembolsar prestamo")
     print("10. Salir")
 
 
@@ -84,6 +85,19 @@ def main():
                 exit()
 
             aprobar_prestamo(prestatario_address, abi_contrato, prestamo_id, prestamista_address)
+            #PRUEBAS: 1-solicitar dos veces el mismo id
+            #PRUEBAS: 2-utilizar un id incorrecto
+            #PRUEBAS: 3-utilizar un prestamista no dado de alta
+        elif opcion == "6":
+            prestamo_id = int(input('Introduce el id del prestamo: '))
+            prestatario_address = input('Introduce el address del cliente: ')
+            #Check if the input address is correct
+            #PRUEBA: verificamos addresses
+            if not web3.is_checksum_address(prestamista_address):
+                print('Error: La cuenta prestamista no es válida')
+                exit()
+
+            reembolsar_prestamo(prestamo_id, prestatario_address, abi_contrato)
             #PRUEBAS: 1-solicitar dos veces el mismo id
             #PRUEBAS: 2-utilizar un id incorrecto
             #PRUEBAS: 3-utilizar un prestamista no dado de alta

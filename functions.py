@@ -137,4 +137,15 @@ def aprobar_prestamo(prestatario_address, abi_contrato, id_prestamo, prestamista
     return receipt
 
 
-
+def reembolsar_prestamo(id_prestamo, cliente_address, abi_contrato):
+    # Conexión a la red Ganache
+    web3 = Web3(Web3.HTTPProvider(ganache_url))
+    abi_contrato = json.loads(abi_contrato)
+    instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
+    
+    # Llama a la función reembolsarPrestamo del contrato
+    tx_hash = instancia_sc.functions.reembolsarPrestamo(id_prestamo).transact({'from': cliente_address})
+    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+    
+    print("Transacción confirmada. Préstamo reembolsado con éxito.")
+    return receipt
