@@ -177,7 +177,9 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
     
     # Esperar la confirmación de la transacción
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
-    
+    # Llama a la función reembolsarPrestamo del contrato para actualizar el prestamo
+    tx_hash = instancia_sc.functions.reembolsarPrestamo(id_prestamo).transact({'from': cliente_address})
+    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
     print("Transacción confirmada. Préstamo reembolsado con éxito.")
     return receipt
 
