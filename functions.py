@@ -238,7 +238,7 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
     tx = {
         'nonce': nonce,
         'to': contractAddress,
-        'data': instancia_sc.encodeABI(fn_name='liquidarGarantia', args=[prestatario_address, id_prestamo]),
+        'data': instancia_sc.encodeABI(fn_name='liquidarGarantia', args=[prestamista_address, id_prestamo]),
         'gas': 2000000,
         'gasPrice': web3.to_wei('50', 'gwei'),
         'from': prestatario_address
