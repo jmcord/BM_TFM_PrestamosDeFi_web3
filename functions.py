@@ -8,17 +8,41 @@ import pickle
 
 def alta_prestamista(nuevo_prestamista, abi_contrato):
     web3 = Web3(Web3.HTTPProvider(ganache_url))
+    #Verificar la conexión
+    if web3.is_connected():
+        print("Conexión exitosa a Ganache")
+    else:
+        print("No se pudo conectar a Ganache. Por favor, verifica la URL o tu conexión a Internet.")
     abiContrato = json.loads(abi_contrato)
 
     instancia_sc = web3.eth.contract(address = contractAddress, abi=abiContrato)
     
     # Llamar a la función solo si el propietario está llamando
     if socio_principal == '0x14d9Cb08D9EC82248f80ce136321e9cbDc4A51a2':  
-        tx_hash = instancia_sc.functions.altaPrestamista(nuevo_prestamista).transact({'from': socio_principal})
-        web3.eth.wait_for_transaction_receipt(tx_hash)
-        print("Transacción confirmada. Empleado prestamista dado de alta.")
+        #tx_hash = instancia_sc.functions.altaPrestamista(nuevo_prestamista).transact({'from': socio_principal})
+    # Construir la transacción
+     tx = {
+        'nonce': web3.eth.get_transaction_count(socio_principal),
+        'to': socio_principal,
+        'data': instancia_sc.encodeABI(fn_name='altaPrestamista', args=[nuevo_prestamista]),
+        'gas': 2000000,
+        'gasPrice': web3.to_wei('50', 'gwei'),
+        'from': socio_principal #Ya que está en el modificador
+        }
+    
+        # Firmar la transacción
+     signed_tx = web3.eth.account.sign_transaction(tx, socio_principal_private_key)
+
+        # Enviar la transacción firmada
+     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    
+    # Esperar la confirmación de la transacción
+     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+     print("Transacción confirmada. Empleado prestamista dado de alta.")
     else:
-        print('No tienes permiso para llamar a esta función')
+     print('No tienes permiso para llamar a esta función')
+    # Llama a la función altaPrestamista del contrato para actualizar el estado
+    tx_hash = instancia_sc.functions.altaPrestamista(nuevo_prestamista).transact({'from': socio_principal, 'value': 0})
         
 def alta_cliente(nuevo_cliente_address, prestamista_address, abi_contrato):
    
