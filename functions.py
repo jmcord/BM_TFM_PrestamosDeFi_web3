@@ -152,6 +152,19 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
     instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
     # Obtener los detalles del préstamo
     prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(cliente_address, id_prestamo).call({'from': prestamista_address})
+       # Obtener los detalles del préstamo
+    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call({'from': prestamista_address})
+    #MEJORA: llamar a la lista de ids y ver si está ahí y comprobar:
+    #if id_prestamo not in prestamos_ids:
+    #    print("Error: Préstamo no asignado al prestatario.")
+    #    return
+    
+    
+    
+    if prestamo[7]:
+        print("Error: Préstamo ya reembolsado.")
+        return
+ 
     
     #Obtener el monto
     monto = int(prestamo[2])
@@ -231,9 +244,17 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
 
     # Crear una instancia del contrato
     instancia_sc = web3.eth.contract(address=contractAddress, abi=abi_contrato)
-
+    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call({'from': prestamista_address})
+    #MEJORA: llamar a la lista de ids y ver si está ahí y comprobar:
+    #if id_prestamo not in prestamos_ids:
+    #    print("Error: Préstamo no asignado al prestatario.")
+    #    return
+    
+    if prestamo[8]:
+        print("Error: Préstamo ya liquidado.")
+        return
     # Obtener el nonce
-    nonce = web3.eth.get_transaction_count(contractAddress)
+    nonce = web3.eth.get_transaction_count(socio_principal)
 
     # Construir la transacción
     tx = {
@@ -242,12 +263,12 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
         'data': instancia_sc.encodeABI(fn_name='liquidarGarantia', args=[prestatario_address, id_prestamo]),
         'gas': 2000000,
         'gasPrice': web3.to_wei('50', 'gwei'),
-        'from': contractAddress
+        'from': socio_principal
     }
 
     try:
         # Firmar la transacción
-        signed_tx = web3.eth.account.sign_transaction(tx, empleado_private_key)
+        signed_tx = web3.eth.account.sign_transaction(tx, socio_principal_private_key)
 
         # Enviar la transacción firmada
         tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -262,7 +283,7 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
     # Esperar la confirmación de la transacción
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
    # Llama a la función liquidarPrestamo del contrato para actualizar el prestamo
-    tx_hash = instancia_sc.functions.liquidarPrestamo(prestatario_address,id_prestamo).transact({'from': contractAddress, 'value': 0})
+    tx_hash = instancia_sc.functions.liquidarPrestamo(prestatario_address,id_prestamo).transact({'from': socio_principal, 'value': 0})
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
     print("Transacción confirmada. Garantía liquidada con éxito.")
     return receipt
