@@ -130,6 +130,8 @@ def main():
             prestamos = obtener_prestamos_por_prestatario(prestatario_address, abi_contrato)
             print(prestamos)
             #PRUEBAS: 1-introducir un address inexistente
+            #PRUEBAS: 2-tratar de liquidar un préstamo ya vencido
+            #PRUEBAS: 3-solicitar y aprobar un préstamo con plazo corto, para poder así probar a liquidarlo
       
 
             
