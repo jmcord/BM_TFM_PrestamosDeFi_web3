@@ -94,9 +94,25 @@ def depositar_garantia(cliente_address, abi_contrato, monto):
     
     # Convertir el monto a wei
     monto_wei = web3.to_wei(monto, 'ether')
+    # Construir la transacción
+    tx = {
+        'nonce': web3.eth.get_transaction_count(cliente_address),
+        'to': socio_principal,
+        'value': 0, 
+        'data': instancia_sc.encodeABI(fn_name='depositarGarantia'),
+        'gas': 2000000,
+        'gasPrice': web3.to_wei('50', 'gwei'),
+        'from': cliente_address #Ya que está en el modificador
+        }
     
+    # Firmar la transacción
+    signed_tx = web3.eth.account.sign_transaction(tx, cliente3_private_key)
 
-    # Luego, depositamos la garantía utilizando la función del contrato
+    # Enviar la transacción firmada
+    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        
+
+    # Luego, llamamos a la función del contrato para actualizar el estado 
     tx_hash = instancia_sc.functions.depositarGarantia().transact({'from': cliente_address, 'value': monto_wei})
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
     
@@ -199,7 +215,7 @@ def reembolsar_prestamo(id_prestamo, prestamista_address, cliente_address, abi_c
     # Obtener los detalles del préstamo
     prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(cliente_address, id_prestamo).call({'from': prestamista_address})
        # Obtener los detalles del préstamo
-    prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call({'from': prestamista_address})
+    #prestamo = instancia_sc.functions.obtenerDetalleDePrestamo(prestatario_address, id_prestamo).call({'from': prestamista_address})
     #MEJORA: llamar a la lista de ids y ver si está ahí y comprobar:
     #if id_prestamo not in prestamos_ids:
     #    print("Error: Préstamo no asignado al prestatario.")
