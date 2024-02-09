@@ -53,10 +53,32 @@ def alta_cliente(nuevo_cliente_address, prestamista_address, abi_contrato):
 
     instancia_sc = web3.eth.contract(address = contractAddress, abi=abiContrato)
 
+    # Construir la transacción
+    tx = {
+        'nonce': web3.eth.get_transaction_count(prestamista_address),
+        'to': socio_principal,
+        'data': instancia_sc.encodeABI(fn_name='altaPrestamista', args=[prestamista_address]),
+        'gas': 2000000,
+        'gasPrice': web3.to_wei('50', 'gwei'),
+        'from': prestamista_address #Ya que está en el modificador
+        }
+    
+    # Firmar la transacción
+    signed_tx = web3.eth.account.sign_transaction(tx, prestamista2_private_key)
 
+    # Enviar la transacción firmada
+    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    
+    # Esperar la confirmación de la transacción
+    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+    print("Transacción confirmada. Empleado prestamista dado de alta.")
+ 
+    # Llama a la función altaCliente del contrato para actualizar el estado
+    tx_hash = instancia_sc.functions.altaCliente(nuevo_cliente_address).transact({'from': prestamista_address, 'value': 0})
+        
     # Crear la transacción para registrar al nuevo cliente
-    tx_hash = instancia_sc.functions.altaCliente(nuevo_cliente_address).transact({'from': prestamista_address})
-    web3.eth.wait_for_transaction_receipt(tx_hash)
+    #tx_hash = instancia_sc.functions.altaCliente(nuevo_cliente_address).transact({'from': prestamista_address})
+    #web3.eth.wait_for_transaction_receipt(tx_hash)
  
 
     # Retornar el resultado
