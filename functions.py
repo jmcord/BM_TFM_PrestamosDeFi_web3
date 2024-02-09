@@ -283,7 +283,7 @@ def liquidar_garantia(id_prestamo, prestatario_address, abi_contrato, empleado_p
     # Esperar la confirmación de la transacción
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
    # Llama a la función liquidarPrestamo del contrato para actualizar el prestamo
-    tx_hash = instancia_sc.functions.liquidarPrestamo(prestatario_address,id_prestamo).transact({'from': socio_principal, 'value': 0})
+    tx_hash = instancia_sc.functions.liquidarGarantia(prestatario_address,id_prestamo).transact({'from': socio_principal, 'value': 0})
     receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
     print("Transacción confirmada. Garantía liquidada con éxito.")
     return receipt
